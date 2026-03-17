@@ -23,8 +23,8 @@ RUN git clone --recursive https://github.com/Stability-AI/stable-virtual-camera 
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Flash attention (needs CUDA at build time)
-RUN pip install --no-cache-dir flash-attn --no-build-isolation || true
+# Skip flash-attn compilation — it takes 20+ min and exceeds RunPod build limit.
+# SEVA falls back to standard PyTorch attention (slightly slower but works fine).
 
 # Clean up to reduce image size
 RUN pip cache purge 2>/dev/null || true \
