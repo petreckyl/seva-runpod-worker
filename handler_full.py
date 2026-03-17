@@ -17,18 +17,28 @@ OUTPUT:
 }
 """
 
+print("[SEVA Worker] handler_full.py loading...", flush=True)
+
 import hashlib
 import io
 import os
+import sys
 import time
 import tempfile
 import traceback
 
+print(f"[SEVA Worker] Python: {sys.version}", flush=True)
+
 import requests
 import runpod
+print("[SEVA Worker] runpod imported OK", flush=True)
+
 import torch
+print(f"[SEVA Worker] PyTorch: {torch.__version__}, CUDA: {torch.cuda.is_available()}", flush=True)
+
 import numpy as np
 from PIL import Image
+print("[SEVA Worker] All base imports OK", flush=True)
 
 # ---------------------------------------------------------------------------
 # B2 / CDN helpers
@@ -123,7 +133,7 @@ def load_models():
     from seva.modules.conditioner import CLIPConditioner
     from seva.sampling import DiscreteDenoiser
 
-    print("[SEVA] Loading model v1.1 (will download on first run) ...")
+    print("[SEVA] Loading model v1.1 (will download on first run) ...", flush=True)
     t0 = time.time()
 
     # load_model uses hf_hub_download internally, which reads HF_TOKEN from env
@@ -133,7 +143,7 @@ def load_models():
     _conditioner = CLIPConditioner().to("cuda")
     _denoiser = DiscreteDenoiser(num_idx=1000, device="cuda")
 
-    print(f"[SEVA] Models loaded in {time.time() - t0:.1f}s")
+    print(f"[SEVA] Models loaded in {time.time() - t0:.1f}s", flush=True)
 
 
 # ---------------------------------------------------------------------------
@@ -348,7 +358,5 @@ def handler(job: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    print("[SEVA Worker] Pre-loading models ...")
-    load_models()
-    print("[SEVA Worker] Starting RunPod handler ...")
+    print("[SEVA Worker] Starting RunPod handler (models load on first request) ...", flush=True)
     runpod.serverless.start({"handler": handler})
