@@ -26,13 +26,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Skip flash-attn compilation — it takes 20+ min and exceeds RunPod build limit.
 # SEVA falls back to standard PyTorch attention (slightly slower but works fine).
 
-# Clean up to reduce image size
-RUN pip cache purge 2>/dev/null || true \
-    && rm -rf /root/.cache /tmp/* \
-    && find /usr/local/lib/python3.10 -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true \
-    && find /usr/local/lib/python3.10 -name "*.pyc" -delete 2>/dev/null || true \
-    && apt-get purge -y --auto-remove git \
-    && rm -rf /var/lib/apt/lists/*
+# Clean up to reduce image size (safe — no package removal)
+RUN rm -rf /root/.cache /tmp/*
 
 # Copy handler
 COPY handler.py /app/handler.py
