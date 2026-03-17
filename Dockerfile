@@ -29,8 +29,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Clean up to reduce image size (safe — no package removal)
 RUN rm -rf /root/.cache /tmp/*
 
-# Copy handler
+# Copy handlers
 COPY handler.py /app/handler.py
+COPY handler_full.py /app/handler_full.py
 
-# Weights are expected on RunPod Network Volume at /workspace/seva-weights
-CMD ["python", "/app/handler.py"]
+CMD ["python", "/app/handler_full.py"]
