@@ -103,17 +103,6 @@ PRESET_MAP = {
     "lemniscate": "lemniscate",
 }
 
-# Weights location — RunPod Network Volume
-WEIGHTS_DIR = None
-for candidate in [
-    "/workspace/seva-weights",
-    "/runpod-volume/seva-weights",
-    os.path.expanduser("~/.cache/huggingface/hub"),
-]:
-    if os.path.isdir(candidate):
-        WEIGHTS_DIR = candidate
-        break
-
 _model = None
 _ae = None
 _conditioner = None
@@ -121,7 +110,8 @@ _denoiser = None
 
 
 def load_models():
-    """Load SEVA model components once. Called at cold-start."""
+    """Load SEVA model components once. Called at cold-start.
+    Downloads weights from HuggingFace on first run if not cached."""
     global _model, _ae, _conditioner, _denoiser
 
     if _model is not None:
@@ -133,9 +123,10 @@ def load_models():
     from seva.modules.conditioner import CLIPConditioner
     from seva.sampling import DiscreteDenoiser
 
-    print("[SEVA] Loading model v1.1 ...")
+    print("[SEVA] Loading model v1.1 (will download on first run) ...")
     t0 = time.time()
 
+    # load_model uses hf_hub_download internally, which reads HF_TOKEN from env
     raw_model = load_model(model_version=1.1, device="cpu", verbose=True).eval()
     _model = SGMWrapper(raw_model).to("cuda")
     _ae = AutoEncoder(chunk_size=1).to("cuda")
