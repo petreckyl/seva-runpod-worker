@@ -1,0 +1,21 @@
+runpod>=1.6.0
+torch>=2.1.0
+torchvision>=0.16.0
+einops
+kornia
+roma
+open-clip-torch
+diffusers
+safetensors
+numpy==1.24.4
+imageio[ffmpeg]
+huggingface-hub
+opencv-python-headless
+Pillow
+b2sdk>=2.0.0
+requests
+fire
+ninja
+splines
+colorama
+flash-attn>=2.5.0 --no-build-isolation
