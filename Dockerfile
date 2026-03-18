@@ -38,4 +38,4 @@ RUN rm -rf /root/.cache /tmp/*
 COPY handler.py /app/handler.py
 COPY handler_full.py /app/handler_full.py
 
-CMD ["python", "/app/handler_full.py"]
+CMD ["python", "/app/handler.py"]
