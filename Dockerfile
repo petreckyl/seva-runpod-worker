@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install numpy first (SEVA needs it, but old numpy fails on Python 3.12+)
+# Cache bust: v2
 RUN pip install --no-cache-dir "numpy<2" setuptools
 
 # Clone SEVA and install — patch numpy requirement to avoid rebuild
