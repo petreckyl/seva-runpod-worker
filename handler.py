@@ -1,23 +1,17 @@
-"""Minimal debug handler — just proves the worker starts and responds."""
+"""Absolute minimum handler — no torch, no deps."""
 import os
 import sys
 import runpod
 
 print(f"[DEBUG] Python: {sys.version}", flush=True)
 print(f"[DEBUG] CWD: {os.getcwd()}", flush=True)
-
-try:
-    import torch
-    print(f"[DEBUG] PyTorch: {torch.__version__}, CUDA: {torch.cuda.is_available()}", flush=True)
-    if torch.cuda.is_available():
-        print(f"[DEBUG] GPU: {torch.cuda.get_device_name(0)}", flush=True)
-except Exception as e:
-    print(f"[DEBUG] torch error: {e}", flush=True)
+print(f"[DEBUG] Disk: checking...", flush=True)
+os.system("df -h / | tail -1")
 
 
 def handler(job):
-    return {"status": "ok", "input": job.get("input", {})}
+    return {"status": "ok", "msg": "hello from seva-worker"}
 
 
-print("[DEBUG] Starting runpod handler...", flush=True)
+print("[DEBUG] Starting handler...", flush=True)
 runpod.serverless.start({"handler": handler})
