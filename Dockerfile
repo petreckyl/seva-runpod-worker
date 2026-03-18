@@ -14,12 +14,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install numpy first (SEVA needs it, but old numpy fails on Python 3.12+)
-RUN pip install --no-cache-dir "numpy<2"
+RUN pip install --no-cache-dir "numpy<2" setuptools
 
-# Clone SEVA and install (remove .git to save space)
+# Clone SEVA and install — patch numpy requirement to avoid rebuild
 RUN git clone --recursive https://github.com/Stability-AI/stable-virtual-camera /app/seva-repo \
     && cd /app/seva-repo \
-    && pip install --no-cache-dir -e . \
+    && sed -i 's/numpy[^"]*"/numpy<2"/g' pyproject.toml setup.cfg setup.py 2>/dev/null || true \
+    && pip install --no-cache-dir --no-build-isolation -e . \
     && rm -rf .git */.git
 
 # Python deps (handler-specific)
